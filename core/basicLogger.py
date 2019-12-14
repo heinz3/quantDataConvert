@@ -7,7 +7,7 @@ setup basic logging capabilities
 import logging
 logger = logging.getLogger(__name__)
 # ----------------------------------------------------------------------------
-import sys, os, argparse, errno, time, pathlib
+import sys, os, pathlib
 from logging.handlers import TimedRotatingFileHandler
 from datetime import datetime
 # ----------------------------------------------------------------------------

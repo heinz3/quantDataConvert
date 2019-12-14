@@ -11,6 +11,7 @@ import sys, os, argparse
 from datetime import datetime
 import core.basicLogger as minilog
 import core.basicConfigReader as miniConfig
+import core.batchCaller as quantBatchCaller
 # ----------------------------------------------------------------------------
 
 def main():
@@ -44,8 +45,19 @@ def main():
         # no config file specified, taking default config file
         theConfig = miniConfig.defaultConfig()      
     logger.info(f"Taking configuration from '{theConfig.configFileName}'")
-    # -------------------------------------------
     logger.info(" ")
+    # -------------------------------------------
+    # connecting to Quant Data Manager
+    theDataManager = quantBatchCaller.callQuantDataManager(theConfig)
+
+    # -------------------------------------------
+    logger.info("--- STEP 1 of 4: updating list of symbols  ---")
+    isOk = theDataManager.updateSymbolsList()
+    if not isOk:
+        logger.critical("update of Symbols List failed")
+        sys.exit(1)  
+    logger.info(" ")
+
     logger.info("--- STEP 1 of 3: updating quotes  ---")
     # todo
     logger.info(" ")
@@ -56,6 +68,7 @@ def main():
     logger.info(" ")
     # todo
 
+    # -------------------------------------------
     # program end message
     logger.info(f"--- END '{os.path.basename(sys.argv[0])}' ---")
 

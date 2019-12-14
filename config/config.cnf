@@ -1,5 +1,14 @@
 # -------------------------------------
 [quantdatamanager]	
-path=D:\\QuantDataManager
+# absolute path required:
+path=D:\QuantDataManager
 application=QDataManager_console.exe
 
+# relative path, directory = 'bat'
+getsymbols=callListSymbols.bat
+# -------------------------------------
+[data]
+# relative path required:
+path=data
+
+symbollist=symbols.csv

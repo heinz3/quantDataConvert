@@ -7,7 +7,7 @@ read details of configfile
 import logging
 logger = logging.getLogger(__name__)
 # ----------------------------------------------------------------------------
-import sys, os, configparser, argparse, errno, time, pathlib
+import sys, os, configparser, pathlib
 # ----------------------------------------------------------------------------
 
 class defaultConfig:
