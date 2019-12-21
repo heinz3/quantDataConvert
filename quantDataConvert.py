@@ -50,23 +50,27 @@ def main():
     # connecting to Quant Data Manager
     theDataManager = quantBatchCaller.callQuantDataManager(theConfig)
 
-    # -------------------------------------------
-    logger.info("--- STEP 1 of 4: updating list of symbols  ---")
-    isOk = theDataManager.updateSymbolsList()
+    # # -------------------------------------------
+    # logger.info("--- STEP 1 of 3: updating list of symbols  ---")
+    # isOk = theDataManager.updateSymbolsList()
+    # if not isOk:
+    #     logger.critical("update of symbols list failed")
+    #     sys.exit(1)  
+    # logger.info(" ")
+    # # -------------------------------------------
+    # logger.info("--- STEP 2 of 3: updating quotes  ---")
+    # isOk = theDataManager.updateQuotes()
+    # if not isOk:
+    #     logger.critical("update of quotes failed")
+    #     sys.exit(1)      
+    # logger.info(" ")
+    # -------------------------------------------    
+    logger.info("--- STEP 3 of 3: exporting to csv  ---")
+    isOk = theDataManager.exportQuotes()    
     if not isOk:
-        logger.critical("update of Symbols List failed")
-        sys.exit(1)  
+        logger.critical("export to CSV failed")
+        sys.exit(1)      
     logger.info(" ")
-
-    logger.info("--- STEP 1 of 3: updating quotes  ---")
-    # todo
-    logger.info(" ")
-    logger.info("--- STEP 2 of 3: exporting to csv  ---")
-    logger.info(" ")
-    # todo
-    logger.info("--- STEP 3 of 3: converting csv to zipline compatible format  ---")
-    logger.info(" ")
-    # todo
 
     # -------------------------------------------
     # program end message

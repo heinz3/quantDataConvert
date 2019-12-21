@@ -1,5 +1,5 @@
-# symbols file
-symbols.csv
+# symbols and quotes files
+*.csv
 
 # logfiles
 log/log.*

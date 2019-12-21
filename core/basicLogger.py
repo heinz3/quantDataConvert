@@ -45,7 +45,7 @@ def initiate(theLogLevel=logging.INFO):
     theFileHandler = TimedRotatingFileHandler(theLogFileName, encoding="utf-8",
                                        when="d",
                                        interval=1,
-                                       backupCount=5)
+                                       backupCount=7)
 
     # source: http://plumberjack.blogspot.com/2011/04/added-functionality-for-basicconfig-in.html                                       
     logging.basicConfig(

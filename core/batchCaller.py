@@ -9,6 +9,7 @@ logger = logging.getLogger(__name__)
 # ----------------------------------------------------------------------------
 import sys, os, configparser, pathlib, subprocess, errno
 import core.basicConfigReader as miniConfig
+import core.quantDataConverter as dataConverter
 # ----------------------------------------------------------------------------
 
 class callQuantDataManager:
@@ -89,14 +90,12 @@ class callQuantDataManager:
         return theBatchFile_Program
 
     def updateSymbolsList(self) -> bool:
-        """call Quant Data Manager to import list of symbols to csv-file"""
+        """call Quant Data Manager to export list of symbols to csv-file"""
+        # get temporary file name
+        theTempfileName = dataConverter.getTempFileName()
+
         # remove old outputfile before calling Quant Data Manager
-        try:
-            os.remove(self.SymbolListFileName)
-        except OSError as e:
-            # https://stackoverflow.com/questions/10840533/most-pythonic-way-to-delete-a-file-which-may-not-exist
-            if e.errno != errno.ENOENT: # errno.ENOENT = no such file or directory
-                raise # re-raise exception if a different error occurred
+        dataConverter.removeFile(self.SymbolListFileName)
 
         # calling QuantDataManager via .bat file
         theBatchFile = self._getBatFileName("getsymbols")
@@ -104,9 +103,57 @@ class callQuantDataManager:
         # build the batch command with command line arguments
         theCommandList = [theBatchFile, 
                           self.QuantDataManagerFileName,
-                          self.SymbolListFileName]
+                          theTempfileName]
+        isOk = self.BatchRun(theCommandList)
+        if not isOk:
+            return False
+
+        # converting the CSV-File into pandas compatible format            
+        isOk = dataConverter.convertSymbolList(theTempfileName,self.SymbolListFileName)
+        return isOk
+
+    def updateQuotes(self) -> bool:
+        """call Quant Data Manager to update all quotes"""
+        # calling QuantDataManager via .bat file
+        theBatchFile = self._getBatFileName("updatequotes")
+
+        # build the batch command with command line arguments
+        theCommandList = [theBatchFile, 
+                          self.QuantDataManagerFileName
+                         ]
         isOk = self.BatchRun(theCommandList)
         return isOk
+
+    def exportQuotes(self,aTimeframe='M1') -> bool:
+        """call Quant Data Manager to export all quotes to csv-files"""
+        # calling QuantDataManager via .bat file
+        theBatchFile = self._getBatFileName("exportquotes")        
+
+        # get list of symbols
+        theSymbols = dataConverter.getSymbolsList(self.SymbolListFileName)
+
+        for aSymbol in theSymbols:
+            logger.info(f"exporting '{aSymbol}' to CSV")
+            theResult = True
+
+            # build the batch command with command line arguments
+            # theCommandList = [theBatchFile, 
+            #                   self.QuantDataManagerFileName,
+            #                   aSymbol,
+            #                   aTimeframe.upper(),
+            #                   self.DataDirectory]
+            # isOk = self.BatchRun(theCommandList)
+            # theResult = theResult and isOk
+            isOk = True
+            if isOk:
+                theSourceFileName = f"{aSymbol}-{aTimeframe.upper()}-No Session.csv"
+                theSourceFileName = os.path.join(self.DataDirectory,theSourceFileName)
+                theTargetFileName = f"{aSymbol}-{aTimeframe.upper()}.csv"
+                theTargetFileName = os.path.join(self.DataDirectory,theTargetFileName)
+                # convert the quotes into pandas compatible format     
+                isOk = dataConverter.convertQuotes(theSourceFileName,theTargetFileName)               
+                theResult = theResult and isOk
+        return theResult
 
     def BatchRun(self,aCommandList : list) -> bool:
         """call Quant Data Manager with a list of commands"""

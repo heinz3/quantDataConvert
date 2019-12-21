@@ -6,6 +6,8 @@ application=QDataManager_console.exe
 
 # relative path, directory = 'bat'
 getsymbols=callListSymbols.bat
+updatequotes=callQuotesUpdate.bat
+exportquotes=callExportQuotes.bat
 # -------------------------------------
 [data]
 # relative path required:
