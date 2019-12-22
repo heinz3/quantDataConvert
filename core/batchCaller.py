@@ -1,5 +1,19 @@
 # -*- coding: UTF-8 -*-
 #
+#
+# Copyright 2019 Heinrich Gerull
+#
+# Licensed under the GNU GENERAL PUBLIC LICENSE version 3
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.gnu.org/licenses/gpl-3.0.html
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License
 """
 class for calling QuantDataManger on windows
 """
@@ -33,17 +47,17 @@ class callQuantDataManager:
             raise FileNotFoundError 
         self._QuantDataManager = theQuantDataManagerProgram
        
-        # # calling QuantDataManager via .bat file
-        # # .bat file location and name = bat/callProgram.bat
-        # theBatchFile_Path    = "bat"
-        # theBatchFile_Name    = "callProgram.bat"
-        # theBatchFile_Program = os.path.join(os.getcwd(), theBatchFile_Path, theBatchFile_Name)
+        # calling QuantDataManager via .bat file
+        # .bat file location and name = bat/callProgram.bat
+        theBatchFile_Path    = "bat"
+        theBatchFile_Name    = "callProgram.bat"
+        theBatchFile_Program = os.path.join(os.getcwd(), theBatchFile_Path, theBatchFile_Name)
 
-        # theFilePath = pathlib.Path(theBatchFile_Program)
-        # if not theFilePath.is_file():
-        #     logger.error(f"Batch File not found at '{theFilePath}'.")
-        #     raise FileNotFoundError 
-        # self._BatchFile = theBatchFile_Program
+        theFilePath = pathlib.Path(theBatchFile_Program)
+        if not theFilePath.is_file():
+            logger.error(f"Batch File not found at '{theFilePath}'.")
+            raise FileNotFoundError 
+        self._BatchFile = theBatchFile_Program
 
         # create data directory, if not exists
         theDataDirectory_SectionName = "data"
@@ -137,14 +151,13 @@ class callQuantDataManager:
             theResult = True
 
             # build the batch command with command line arguments
-            # theCommandList = [theBatchFile, 
-            #                   self.QuantDataManagerFileName,
-            #                   aSymbol,
-            #                   aTimeframe.upper(),
-            #                   self.DataDirectory]
-            # isOk = self.BatchRun(theCommandList)
-            # theResult = theResult and isOk
-            isOk = True
+            theCommandList = [theBatchFile, 
+                              self.QuantDataManagerFileName,
+                              aSymbol,
+                              aTimeframe.upper(),
+                              self.DataDirectory]
+            isOk = self.BatchRun(theCommandList)
+            theResult = theResult and isOk
             if isOk:
                 theSourceFileName = f"{aSymbol}-{aTimeframe.upper()}-No Session.csv"
                 theSourceFileName = os.path.join(self.DataDirectory,theSourceFileName)

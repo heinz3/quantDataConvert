@@ -1,5 +1,19 @@
 # -*- coding: UTF-8 -*-
 #
+#
+# Copyright 2019 Heinrich Gerull
+#
+# Licensed under the GNU GENERAL PUBLIC LICENSE version 3
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.gnu.org/licenses/gpl-3.0.html
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License
 """
 module for converting QuantDataManager files
 """
@@ -105,7 +119,7 @@ def convertQuotes(nameOfSourceFile:str, nameOfDestinationFile:str) -> bool:
         logger.debug(f"convert Quant Data Quotes from '{nameOfSourceFile}' and save as '{nameOfDestinationFile}'")
 
         # if destination file exists already, delete it
-        #removeFile(nameOfDestinationFile)
+        removeFile(nameOfDestinationFile)
 
         theCSVfieldnames = ['date', 'open', 'high', 'low', 'close', 'volume']
         numberOfLines = getNumberOfLinesOfFile(nameOfSourceFile)
@@ -145,15 +159,16 @@ def convertQuotes(nameOfSourceFile:str, nameOfDestinationFile:str) -> bool:
                          'close' : f"{aClose}",
                          'volume': f"{aVolume}"
                         })
+
+        # when conversion is complete, delete source-file
+        removeFile(nameOfSourceFile)                    
+
         fileConvertIsOk = True
     except Exception as inst:
         logger.error(type(inst))     # the exception instance
         logger.error(inst.args)      # arguments stored in .args
         logger.error(inst)           # __str__ allows args to be printed directly
         fileConvertIsOk = False
-    finally:
-        #removeFile(nameOfSourceFile)
-        pass
     return fileConvertIsOk
 
 
